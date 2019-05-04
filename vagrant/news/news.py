@@ -8,16 +8,13 @@ class DataBaseUtils():
         """Connects to the news database and return a database cursor."""
         try:
             database = psycopg2.connect("dbname=%s" % db_name)
-            cursor = database.cursor()
+            return database.cursor()
         except:
-            print("Failed to connect to the PostgreSQL database.")
+            print("Failed to connect to database.")
             return None
-        else:
-            return cursor
 
 
 class LogAnalyzer():
-
     def most_popular_three_articles(self, db_cursor):
         """
         Query and print out the 3 most popular articles.
@@ -44,13 +41,12 @@ class LogAnalyzer():
         db_cursor.execute(query)
         results = db_cursor.fetchall()
 
-        print('Three most popular articles of all time')
-        print('=======================================')
+        print('------ Three most popular articles of all time ------')
+        print('=====================================================')
 
         for result in results:
-            print(
-                '"{title}" - {count} views'.
-                format(title=result[0], count=result[1]))
+            print('"{title}" - {count} views'.format(
+                title=result[0], count=result[1]))
 
         print('')
 
@@ -80,12 +76,12 @@ class LogAnalyzer():
         db_cursor.execute(query)
         results = db_cursor.fetchall()
 
-        print('Most popular authors of all time')
-        print('================================')
+        print('------ Most popular authors of all time ------')
+        print('==============================================')
 
         for result in results:
-            print('{author} - {count} views'
-                  .format(author=result[0], count=result[1]))
+            print('{author} - {count} views'.format(
+                author=result[0], count=result[1]))
 
         print('')
 
@@ -127,13 +123,12 @@ class LogAnalyzer():
         db_cursor.execute(query)
         results = db_cursor.fetchall()
 
-        print('Days with greater than 1% errors')
-        print('================================')
+        print('------ Days with greater than 1% errors ------')
+        print('==============================================')
 
         for result in results:
             print('{date:%B %d, %Y} - {error_rate:.1f}% errors'.format(
-                date=result[0],
-                error_rate=result[1]))
+                date=result[0], error_rate=result[1]))
 
         print('')
 
