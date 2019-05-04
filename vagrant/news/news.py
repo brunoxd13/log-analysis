@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import psycopg2
+from queries import ARTICLE_QUERY, AUTHOR_QUERY, LOG_QUERY
 
 
 class DataBaseUtils():
@@ -22,23 +23,8 @@ class LogAnalyzer():
         Args:
             db_cursor: psycopg2 PostgreSQL database cursor object.
         """
-        query = """
-                SELECT
-                    articles.title,
-                    count(*) AS num
-                FROM
-                    log,
-                    articles
-                WHERE
-                    log.path = '/article/' || articles.slug
-                GROUP BY
-                    articles.title
-                ORDER BY
-                    count(*) DESC
-                LIMIT 3
-        """
 
-        db_cursor.execute(query)
+        db_cursor.execute(ARTICLE_QUERY)
         results = db_cursor.fetchall()
 
         print('------ Three most popular articles of all time ------')
@@ -56,24 +42,8 @@ class LogAnalyzer():
         Args:
             db_cursor: psycopg2 PostgreSQL database cursor object.
         """
-        query = """
-                SELECT
-                    authors.name,
-                    count(*) AS num
-                FROM
-                    log,
-                    articles,
-                    authors
-                WHERE
-                    log.path = '/article/' || articles.slug AND
-                    articles.author = authors.id
-                GROUP BY
-                    authors.name
-                ORDER BY
-                    num DESC
-        """
 
-        db_cursor.execute(query)
+        db_cursor.execute(AUTHOR_QUERY)
         results = db_cursor.fetchall()
 
         print('------ Most popular authors of all time ------')
@@ -91,36 +61,8 @@ class LogAnalyzer():
         Args:
             db_cursor: psycopg2 PostgreSQL database cursor object.
         """
-        query = """
-                SELECT
-                    errors.date,
-                    errors.num/total.num::float*100 AS error_rate
-                FROM
-                    (SELECT
-                        time::timestamp::date AS date,
-                        count(status) AS num
-                    FROM
-                        log
-                    GROUP BY
-                        date, status
-                    HAVING
-                        status='404 NOT FOUND'
-                    ) AS errors,
 
-                    (SELECT
-                        time::timestamp::date AS date,
-                        count(*) AS num
-                    FROM
-                        log
-                    GROUP BY
-                        date
-                    ) AS total
-                WHERE
-                    errors.date = total.date AND
-                    errors.num/total.num::float*100 > 1.0
-        """
-
-        db_cursor.execute(query)
+        db_cursor.execute(LOG_QUERY)
         results = db_cursor.fetchall()
 
         print('------ Days with greater than 1% errors ------')
