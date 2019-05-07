@@ -4,6 +4,12 @@ This is the third graduation project for the [FullStack Nanodegree Program](http
 
 A reporting tool was created that prints reports (in plain text) based on the data in the database. This reporting tool is a Python program using the psycopg2 module to connect to the database.
 
+
+This reporting tool answer three questions:
+1. What are the three most popular articles of all time?
+2. Who are the authors of most popular articles of all time?
+3.  On what days more than 1% of requests resulted in errors?
+
 ## Getting Started
 
 ### Prerequisites
