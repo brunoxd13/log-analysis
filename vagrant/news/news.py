@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 
 import psycopg2
 from queries import ARTICLE_QUERY, AUTHOR_QUERY, LOG_QUERY
@@ -10,9 +10,10 @@ class DataBaseUtils():
         try:
             database = psycopg2.connect("dbname=%s" % db_name)
             return database.cursor()
-        except:
-            print("Failed to connect to database.")
-            return None
+        except psycopg2.DatabaseError as err:
+            print("Unable to connect to the database")
+            print(err)
+            sys.exit(1)
 
 
 class LogAnalyzer():
